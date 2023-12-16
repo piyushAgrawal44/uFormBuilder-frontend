@@ -57,7 +57,7 @@ function ViewClozeQuestion(props) {
                                     {
                                         props.question.userAnswer !== undefined ?
                                             props.question.userAnswer.map((optionIndex, ansIndex) => {
-                                                if (optionIndex !== undefined)
+                                                if (optionIndex !== undefined && optionIndex!==null)
                                                     return (
                                                         <div key={ansIndex} className='rounded border border-blue-400 px-2 py-1 cursor-move text-sm' draggable onDragStart={(e) => draggingStart(e, sentenceIndex)}>
                                                             {props.question.options[optionIndex]}
