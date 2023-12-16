@@ -19,7 +19,7 @@ function ViewClozeQuestion(props) {
         if (newData.questions[props.questionIndex].userAnswer === undefined)
             newData.questions[props.questionIndex].userAnswer = [];
 
-        newData.questions[props.questionIndex].userAnswer[wordIndex]=parseInt(optionIndex);
+        newData.questions[props.questionIndex].userAnswer[wordIndex] = parseInt(optionIndex);
         props.setFormData(newData);
 
     }
@@ -37,35 +37,37 @@ function ViewClozeQuestion(props) {
 
     }
     return (
-        
+
         <>
-        
+
             <div className='w-full bg-white p-5 py-3 mb-3 rounded-[10px]'>
                 <p className='text-blue-500'><b>Question #{props.questionIndex + 1}</b> (Drag n Drop options)</p>
                 <h6 className='text-lg font-semibold text-gray-700'>{props.question.questionTitle}</h6>
 
 
-                
+
                 <h6 className='mt-2 text-md font-medium'>Q. Fill in the blanks: </h6>
 
                 <div className='font-normal text-xl mb-2 flex items-center' id='preview'>
-                     {props.question.sentence.split(' ').map((word, sentenceIndex) => {
+                    {props.question.sentence.split(' ').map((word, sentenceIndex) => {
                         let tempIndex = props.question.options.indexOf(word);
                         if (tempIndex !== -1 && props.question.correctOptions[tempIndex] === true) {
                             return (
-                                <div key={sentenceIndex} className='inline-block min-w-[50px] min-h-[20px] mr-2  bg-yellow-200 rounded p-2' droppable="true" onDragOver={(e) => draggingOver(e)} onDrop={(e)=>draggingEnd(e, sentenceIndex)}>
+                                <div key={sentenceIndex} className='inline-block min-w-[50px] min-h-[20px] mr-2  bg-yellow-200 rounded p-2' droppable="true" onDragOver={(e) => draggingOver(e)} onDrop={(e) => draggingEnd(e, sentenceIndex)}>
                                     {
-                                        props.question.userAnswer!==undefined?
-                                        props.question.userAnswer.map((optionIndex,ansIndex)=>{
-                                            if(optionIndex!==undefined)
-                                            return (
-                                                <div key={ansIndex} className='rounded border border-blue-400 px-2 py-1 cursor-move text-sm' draggable onDragStart={(e)=> draggingStart(e,sentenceIndex)}>
-                                                {props.question.options[optionIndex]}
-                                                </div>
-                                            )
-                                        })
-                                        :
-                                        ""
+                                        props.question.userAnswer !== undefined ?
+                                            props.question.userAnswer.map((optionIndex, ansIndex) => {
+                                                if (optionIndex !== undefined)
+                                                    return (
+                                                        <div key={ansIndex} className='rounded border border-blue-400 px-2 py-1 cursor-move text-sm' draggable onDragStart={(e) => draggingStart(e, sentenceIndex)}>
+                                                            {props.question.options[optionIndex]}
+                                                        </div>
+                                                    )
+                                                else
+                                                    return "";
+                                            })
+                                            :
+                                            ""
                                     }
                                 </div>
                             )
@@ -92,6 +94,8 @@ function ViewClozeQuestion(props) {
                                         {option}
                                     </div>
                                 )
+                            else
+                                return "";
                         })
                     }
                 </div>

@@ -1,4 +1,4 @@
-import React, { useState,memo } from 'react'
+import React, { memo } from 'react'
 import Button from './Button'
 import CloseButton from './CloseButton'
 import Label from './Label'
@@ -6,12 +6,7 @@ import Input from './Input'
 import Select from './Select'
 
 const CategorizeQuestion=(props)=> {
-    const [categories, setCategories] = useState([""]);
-    const [options, setOptions] = useState([""]);
-    const [optionCategoryMapping, setOptionCategoryMapping] = useState([''])
-    const [questionTitle, setQuestionTitle] = useState("");
-
-
+   
     // handle add category
     const addCategory = () => {
         // setCategories([...categories, ""]);

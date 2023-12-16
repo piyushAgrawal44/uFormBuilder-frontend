@@ -2,7 +2,7 @@ import React from 'react'
 
 function ViewCategoryQuestion(props) {
 
-    
+
     const draggingStart = (event, optionIndex) => {
         event.dataTransfer.setData("optionIndex", optionIndex);
     }
@@ -55,6 +55,8 @@ function ViewCategoryQuestion(props) {
                                     {option}
                                 </div>
                             )
+                        else
+                            return "";
                     })
                 }
             </div>
@@ -63,7 +65,7 @@ function ViewCategoryQuestion(props) {
                 {
                     props.question.categories.map((category, categoryIndex) => {
                         return (
-                            <div key={categoryIndex} className={"w-auto min-w-[100px]" + ' rounded-[10px] border-2 border-blue-300 p-2 text-center h-[200px] overflow-y-auto cursor-move'}
+                            <div key={categoryIndex} className={'w-auto min-w-[100px] rounded-[10px] border-2 border-blue-300 p-2 text-center h-[200px] overflow-y-auto cursor-move'}
                                 droppable="true" onDragOver={(e) => { draggingOver(e) }} onDrop={(e) => draggingEnd(e, categoryIndex, props.questionIndex)}
                             >
                                 <h6 className='underline font-semibold'>{category}</h6>
@@ -77,6 +79,8 @@ function ViewCategoryQuestion(props) {
                                                         {props.question.options[ansIndex]}
                                                     </div>
                                                 )
+                                            else
+                                                return "";
                                         }) : ""
                                 }
                             </div>

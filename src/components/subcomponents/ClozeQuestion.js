@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, memo } from 'react'
+import React, { useEffect, useState, memo } from 'react'
 import Button from './Button'
 import Label from './Label'
 import Input from './Input'
@@ -38,6 +38,7 @@ const ClozeQuestion = (props) => {
         return () => {
             document.removeEventListener('keydown', handleKeyDown);
         };
+        // eslint-disable-next-line
     }, []);
 
     // handle add option
