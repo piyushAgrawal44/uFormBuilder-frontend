@@ -9,31 +9,37 @@ import { useState } from "react";
 import EditForm from "./components/EditForm";
 import UserResponse from "./components/UserResponse";
 import ViewResponse from "./components/ViewResponse";
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import { TouchBackend } from 'react-dnd-touch-backend';
 function App() {
-
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  const Backend = isMobile ? TouchBackend : HTML5Backend;
   const [alert, setAlert] = useState({ display: false, message: "", type: "danger" })
   return (
-    <div className="bg-[#f5f5f5]">
+    <DndProvider backend={Backend}>
+      <div className="bg-[#f5f5f5]">
 
-      {alert.display && <div className=" relative ">
-        <Alert message={alert.message} type={alert.type} />
+        {alert.display && <div className=" relative ">
+          <Alert message={alert.message} type={alert.type} />
+        </div>
+        }
+        <Router basename='/'>
+
+
+          <Routes>
+            <Route exact path='/' element={<Home />} />
+            <Route exact path='/new/form' element={<NewForm setAlert={setAlert} />} />
+            <Route exact path='/view/form' element={<ViewForm setAlert={setAlert} />} />
+            <Route exact path='/edit/form' element={<EditForm setAlert={setAlert} />} />
+            <Route exact path='/view/form/response' element={<UserResponse setAlert={setAlert} />} />
+            <Route exact path='/view/response' element={<ViewResponse setAlert={setAlert} />} />
+            <Route path='*' element={<NotFound />} />
+          </Routes>
+
+        </Router>
       </div>
-      }
-      <Router basename='/'>
-
-
-        <Routes>
-          <Route exact path='/' element={<Home />} />
-          <Route exact path='/new/form' element={<NewForm setAlert={setAlert}/>} />
-          <Route exact path='/view/form' element={<ViewForm setAlert={setAlert}/>} />
-          <Route exact path='/edit/form' element={<EditForm setAlert={setAlert}/>} />
-          <Route exact path='/view/form/response' element={<UserResponse setAlert={setAlert}/>} />
-          <Route exact path='/view/response' element={<ViewResponse setAlert={setAlert}/>} />
-          <Route path='*' element={<NotFound />} />
-        </Routes>
-
-      </Router>
-    </div>
+    </DndProvider>
   );
 }
 

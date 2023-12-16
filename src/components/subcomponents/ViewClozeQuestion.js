@@ -1,41 +1,52 @@
 import React from 'react'
+import DropBlank from './DropBlank';
+import DragOption from './DragOption';
+import { useDrop } from 'react-dnd';
 
 function ViewClozeQuestion(props) {
     // const [first, setFirst] = useState(0)
-    const draggingStart = (event, optionIndex) => {
-        event.dataTransfer.setData("optionIndex", optionIndex);
-    }
+  
 
     const draggingOver = (event) => {
         event.preventDefault();
     }
 
-    const draggingEnd = (event, wordIndex) => {
-        event.preventDefault();
-        let optionIndex = event.dataTransfer.getData("optionIndex");
+    
+    // const draggingEnd2 = (event, questionIndex) => {
+    //     event.preventDefault();
+    //     let optionIndex = event.dataTransfer.getData("optionIndex");
 
+    //     const newData = { ...props.formData };
+    //     if (newData.questions[questionIndex].userAnswer === undefined)
+    //         newData.questions[questionIndex].userAnswer = [];
 
+    //     newData.questions[questionIndex].userAnswer[optionIndex] = undefined;
+    //     props.setFormData(newData);
+
+    // }
+
+    const [{ isOver }, drop] = useDrop(() => ({
+        accept: "selected_option",
+        drop: (item) => {
+            draggingEnd2(item.optionIndex);
+        },
+        collect: (monitor) => ({
+            isOver: !!monitor.isOver()
+        })
+    }));
+
+    const draggingEnd2 = (optionIndex) => {
+       
         const newData = { ...props.formData };
         if (newData.questions[props.questionIndex].userAnswer === undefined)
             newData.questions[props.questionIndex].userAnswer = [];
 
-        newData.questions[props.questionIndex].userAnswer[wordIndex] = parseInt(optionIndex);
+        newData.questions[props.questionIndex].userAnswer[optionIndex] = undefined;
         props.setFormData(newData);
 
     }
 
-    const draggingEnd2 = (event, questionIndex) => {
-        event.preventDefault();
-        let optionIndex = event.dataTransfer.getData("optionIndex");
 
-        const newData = { ...props.formData };
-        if (newData.questions[questionIndex].userAnswer === undefined)
-            newData.questions[questionIndex].userAnswer = [];
-
-        newData.questions[questionIndex].userAnswer[optionIndex] = undefined;
-        props.setFormData(newData);
-
-    }
     return (
 
         <>
@@ -53,23 +64,8 @@ function ViewClozeQuestion(props) {
                         let tempIndex = props.question.options.indexOf(word);
                         if (tempIndex !== -1 && props.question.correctOptions[tempIndex] === true) {
                             return (
-                                <div key={sentenceIndex} className='inline-block min-w-[50px] min-h-[20px] mr-2  bg-yellow-200 rounded p-2' droppable="true" onDragOver={(e) => draggingOver(e)} onDrop={(e) => draggingEnd(e, sentenceIndex)}>
-                                    {
-                                        props.question.userAnswer !== undefined ?
-                                            props.question.userAnswer.map((optionIndex, ansIndex) => {
-                                                if (optionIndex !== undefined && optionIndex!==null)
-                                                    return (
-                                                        <div key={ansIndex} className='rounded border border-blue-400 px-2 py-1 cursor-move text-sm' draggable onDragStart={(e) => draggingStart(e, sentenceIndex)}>
-                                                            {props.question.options[optionIndex]}
-                                                        </div>
-                                                    )
-                                                else
-                                                    return "";
-                                            })
-                                            :
-                                            ""
-                                    }
-                                </div>
+                                
+                                <DropBlank key={sentenceIndex} formData={props.formData} question={props.question} questionIndex={props.questionIndex} sentenceIndex={sentenceIndex}  setFormData={props.setFormData} />
                             )
                         }
                         else {
@@ -84,15 +80,14 @@ function ViewClozeQuestion(props) {
                 </div>
 
                 <h6 className='mt-2 text-md'>Options: </h6>
-                <div className='my-2 w-full flex flex-wrap gap-2 min-h-[20px] min-w-[20px]' droppable="true" onDragOver={(e) => draggingOver(e)} onDrop={(e) => draggingEnd2(e, props.questionIndex)}>
+                <div ref={drop} className={`my-2 w-full flex flex-wrap gap-2 min-h-[20px] min-w-[20px] ${isOver?'bg-gray-200':""}`} droppable="true" onDragOver={(e) => draggingOver(e)} onDrop={(e) => draggingEnd2(e, props.questionIndex)}>
 
                     {
                         props.question.options.map((option, optionIndex) => {
                             if (props.question.userAnswer === undefined || !props.question.userAnswer.includes(optionIndex))
                                 return (
-                                    <div key={optionIndex} className='rounded border border-blue-300 px-3 py-2 cursor-move' draggable="true" onDragStart={(e) => draggingStart(e, optionIndex)} droppable="true" onDragOver={(e) => draggingOver(e)} onDrop={(e) => draggingEnd2(e, props.questionIndex)}>
-                                        {option}
-                                    </div>
+                                    
+                                    <DragOption key={optionIndex} option={option} optionIndex={optionIndex} type="blank" />
                                 )
                             else
                                 return "";

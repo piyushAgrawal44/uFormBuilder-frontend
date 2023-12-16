@@ -63,45 +63,9 @@ function ViewForm(props) {
     }, []);
 
     const [formData, setFormData] = useState({
-        id: "id1",
-        title: "Mid Sem 2023",
+        id: "",
+        title: "",
         questions: [
-            {
-                question_type: "category-question",
-                questionTitle: "arrange category wise",
-                categories: ['fruit', 'cloths', 'juice'],
-                options: ['banana', 'apple', 'jeans', 'shirt', 'long banana apple juice for you', 'long banana apple juice for you'],
-                optionCategoryMapping: ['fruit', 'fruit', 'cloths', 'cloths', 'fruit', 'fruit'],
-            },
-            {
-                question_type: "category-question",
-                questionTitle: "arrange category wise",
-                categories: ['city', 'cloths'],
-                options: ['raigarh', 'raipur', 'jeans', 'shirt'],
-                optionCategoryMapping: ['city', 'city', 'cloths', 'cloths'],
-            },
-            {
-                question_type: "cloze-question",
-                sentence: "I am a rich man ",
-                options: ['dog', 'rich', 'cat', 'frog'],
-                correctOptions: [false, true, false, false],
-            },
-            {
-                question_type: "comprehension-question",
-                paragraph: "My name is piyush  . Lorem ipsum, dolor sit amet consectetur adipisicing elit. Dolores corporis, ullam tenetur veritatis doloremque atque fugiat sed, provident quidem pariatur quis voluptatum? Atque architecto error veritatis, qui soluta omnis, dolore hic odit nihil accusamus ipsam voluptatum aspernatur sunt quaerat id sit. Fugit accusantium doloribus, nihil dolorem consectetur architecto sed praesentium, sapiente odit reprehenderit doloremque, ex amet iste eius eveniet tempora aliquid deserunt illo qui sunt! Nisi temporibus molestiae vel harum quod, magnam dignissimos illo ut praesentium obcaecati. Ab iste ad fugiat, corrupti totam accusamus consequuntur autem commodi, accusantium impedit tenetur id voluptate, illum officia? Illum quo similique facilis sapiente est?",
-                mcq: [
-                    {
-                        question: "What is your name. ",
-                        options: ['piyush', 'aman'],
-                        correctOptions: [true, false]
-                    },
-                    {
-                        question: "What is your name2. ",
-                        options: ['piyush', 'aman', "ankit"],
-                        correctOptions: [true, false, false]
-                    }
-                ]
-            },
 
         ]
     });

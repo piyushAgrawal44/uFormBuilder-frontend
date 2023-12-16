@@ -1,43 +1,33 @@
-import React from 'react'
-
+import React from 'react';
+import DragOption from './DragOption';
+import DropCategory from './DropCategory';
+import { useDrop } from 'react-dnd';
 function ViewCategoryQuestion(props) {
 
 
-    const draggingStart = (event, optionIndex) => {
-        event.dataTransfer.setData("optionIndex", optionIndex);
-    }
+    const [{ isOver }, drop] = useDrop(() => ({
+        accept: "selected_option",
+        drop: (item)=>{
+            draggingEnd2(item.optionIndex);
+        },
+        collect: (monitor) => ({
+            isOver: !!monitor.isOver()
+        })
+    }));
 
-    const draggingOver = (event) => {
-        event.preventDefault();
-    }
-
-    const draggingEnd = (event, categoryIndex, questionIndex) => {
-        event.preventDefault();
-        let optionIndex = event.dataTransfer.getData("optionIndex");
-
-
+    const draggingEnd2 = ( optionIndex) => {
+       
+        // let optionIndex = dragItem.current;
         const newData = { ...props.formData };
-        if (newData.questions[questionIndex].userAnswer === undefined)
-            newData.questions[questionIndex].userAnswer = [];
+        if (newData.questions[props.questionIndex].userAnswer === undefined)
+            newData.questions[props.questionIndex].userAnswer = [];
 
-
-        newData.questions[questionIndex].userAnswer[optionIndex] = newData.questions[questionIndex].categories[categoryIndex];
+        newData.questions[props.questionIndex].userAnswer[optionIndex] = undefined;
         props.setFormData(newData);
 
     }
 
-    const draggingEnd2 = (event, questionIndex) => {
-        event.preventDefault();
-        let optionIndex = event.dataTransfer.getData("optionIndex");
-
-        const newData = { ...props.formData };
-        if (newData.questions[questionIndex].userAnswer === undefined)
-            newData.questions[questionIndex].userAnswer = [];
-
-        newData.questions[questionIndex].userAnswer[optionIndex] = undefined;
-        props.setFormData(newData);
-
-    }
+    // droppable="true" onDragOver={(e) => draggingOver(e)} onDrop={(e) => draggingEnd2(e, props.questionIndex)}
     return (
         <div key={props.questionIndex} className='w-full bg-white p-5 py-3 mb-3 rounded-[10px]'>
             <p className='text-blue-500'><b>Question #{props.questionIndex + 1}</b> (Drag n Drop options)</p>
@@ -45,16 +35,13 @@ function ViewCategoryQuestion(props) {
 
 
             <h6 className='mt-2 text-md'>Your Options: </h6>
-            <div className='my-2 w-full flex flex-wrap gap-2 min-h-[20px] min-w-[20px]' droppable="true" onDragOver={(e) => draggingOver(e)} onDrop={(e) => draggingEnd2(e, props.questionIndex)}>
+            <div className={`my-2 w-full flex flex-wrap gap-2 min-h-[20px] min-w-[20px] ${isOver ? 'bg-slate-200' : ''}`} ref={drop}>
 
                 {
                     props.question.options.map((option, optionIndex) => {
+                        
                         if (props.question.userAnswer === undefined || props.question.userAnswer[optionIndex] === undefined)
-                            return (
-                                <div key={optionIndex} className='rounded border border-blue-300 px-3 py-2 cursor-move' draggable="true" onDragStart={(e) => draggingStart(e, optionIndex)} droppable="true" onDragOver={(e) => draggingOver(e)} onDrop={(e) => draggingEnd2(e, props.questionIndex)}>
-                                    {option}
-                                </div>
-                            )
+                            return <DragOption key={optionIndex} option={option} optionIndex={optionIndex} type="option" />
                         else
                             return "";
                     })
@@ -64,27 +51,7 @@ function ViewCategoryQuestion(props) {
             <div className="my-2 flex flex-wrap gap-2">
                 {
                     props.question.categories.map((category, categoryIndex) => {
-                        return (
-                            <div key={categoryIndex} className={'w-auto min-w-[100px] rounded-[10px] border-2 border-blue-300 p-2 text-center h-[200px] overflow-y-auto cursor-move'}
-                                droppable="true" onDragOver={(e) => { draggingOver(e) }} onDrop={(e) => draggingEnd(e, categoryIndex, props.questionIndex)}
-                            >
-                                <h6 className='underline font-semibold'>{category}</h6>
-                                <br />
-                                {
-                                    props.question.userAnswer !== undefined ?
-                                        props.question.userAnswer.map((e, ansIndex) => {
-                                            if (e === category)
-                                                return (
-                                                    <div key={ansIndex} className='rounded border border-blue-300 px-3 py-2 cursor-move mb-1' draggable onDragStart={(e) => draggingStart(e, ansIndex)}>
-                                                        {props.question.options[ansIndex]}
-                                                    </div>
-                                                )
-                                            else
-                                                return "";
-                                        }) : ""
-                                }
-                            </div>
-                        )
+                        return <DropCategory key={categoryIndex} formData={props.formData} question={props.question} questionIndex={props.questionIndex} categoryIndex={categoryIndex} category={category} setFormData={props.setFormData} />
                     })
                 }
             </div>
