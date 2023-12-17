@@ -18,7 +18,7 @@ function App() {
   const [alert, setAlert] = useState({ display: false, message: "", type: "danger" })
   return (
     <DndProvider backend={Backend}>
-      <div className="bg-[#f5f5f5]">
+      <div className="bg-[#f5f5f5] min-h-screen">
 
         {alert.display && <div className=" relative ">
           <Alert message={alert.message} type={alert.type} />

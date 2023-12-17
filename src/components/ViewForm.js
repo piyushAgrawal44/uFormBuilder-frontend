@@ -6,6 +6,7 @@ import ViewComprehensionQuestion from './subcomponents/ViewComprehensionQuestion
 import Button from './subcomponents/Button';
 import Input from './subcomponents/Input';
 import Label from './subcomponents/Label';
+import CustomLoader from './CustomLoader';
 
 // let backendURL = "http://localhost:8000"
 let backendURL = "https://u-form-builder-backend.vercel.app"
@@ -15,11 +16,11 @@ function ViewForm(props) {
     const id = urlParams.get('id');
     const navigate = useNavigate();
 
-
+    const [loading, setLoading] = useState(true);
     const fetchData = async () => {
         try {
 
-
+            
             const response = await fetch(backendURL + "/view/form", {
                 method: 'POST', // *GET, POST, PUT, DELETE, etc.
                 headers: {
@@ -29,6 +30,7 @@ function ViewForm(props) {
                 body: JSON.stringify({ id: id })
             });
             const resultData = await response.json();
+            setLoading(false);
             if (!resultData.success) {
                
                 const newAlert = { display: true, message: resultData.message, type: "danger" };
@@ -37,9 +39,11 @@ function ViewForm(props) {
                 setTimeout(() => {
                     const newAlert = { display: false, message: "", type: "danger" };
                     props.setAlert(newAlert);
+                    navigate('/');
                 }, 2000);
                 return;
             }
+
             let data = resultData.data[0];
             data.questions = JSON.parse(data.questions);
             setFormData(data);
@@ -51,6 +55,7 @@ function ViewForm(props) {
             setTimeout(() => {
                 const newAlert = { display: false, message: "", type: "danger" };
                 props.setAlert(newAlert);
+                navigate('/');
             }, 2000);
             return;
         }
@@ -74,6 +79,7 @@ function ViewForm(props) {
 
 
     const submitForm = async () => {
+        
         let data = {};
         data.form_id = id;
         data.name = userDetails.name.trim();
@@ -97,8 +103,10 @@ function ViewForm(props) {
             data.answers.push(e.userAnswer);
             return 0;
         });
+        
         data.answers = JSON.stringify(data.answers);
         try {
+            setLoading(true);
             // props.setProgress(10);
             const response = await fetch(backendURL + "/save/form", {
                 method: 'POST', // *GET, POST, PUT, DELETE, etc.
@@ -112,7 +120,7 @@ function ViewForm(props) {
 
             const resultData = await response.json();
             // props.setProgress(100);
-
+            setLoading(false);
             if (!resultData.success) {
 
                 const newAlert = { display: true, message: resultData.message, type: "danger" };
@@ -151,6 +159,9 @@ function ViewForm(props) {
     }
     return (
         <>
+            {
+                loading ? <CustomLoader /> :
+            
             <div className='w-[100%]  bg-[#f2f3ff] '>
 
                 <div className="max-w-[576px] mx-auto p-2 py-5 text-start">
@@ -199,6 +210,7 @@ function ViewForm(props) {
                     <Button text="Submit" onclick={(e) => { submitForm() }} />
                 </div>
             </div>
+            }
         </>
     )
 }

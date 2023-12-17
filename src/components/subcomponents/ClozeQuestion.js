@@ -1,4 +1,4 @@
-import React, { useEffect, useState, memo } from 'react'
+import React, { useEffect, useState, memo, useRef } from 'react'
 import Button from './Button'
 import Label from './Label'
 import Input from './Input'
@@ -6,30 +6,91 @@ import Option from './Option'
 import CloseButton from './CloseButton'
 
 const ClozeQuestion = (props) => {
-    // const [sentence, setSentence] = useState("");
-    // const [options, setOptions] = useState([""]);
-    // const [correctOption, setCorrectOption] = useState([false]);
+    
     const [selectedWords, setSelectedWords] = useState([]);
-    // const inputRef = useRef(null);
+    const inputRef = useRef(null);
 
     const parentIndex = props.index;
     // handle word selection
+    // const handleKeyDown = (e) => {
+    //     // && inputRef.current === document.activeElement
+    //     if (e.key === 'u' && e.ctrlKey) {
+    //         const selection = window.getSelection();
+    //         const selectedText = selection.toString().trim();
+
+    //         if (selectedText !== '') {
+    //             const words = selectedText.split(/\s+/);
+    //             setSelectedWords([...selectedWords, ...words]);
+
+    //         }
+    //     }
+    // };
+
     const handleKeyDown = (e) => {
         // && inputRef.current === document.activeElement
         if (e.key === 'u' && e.ctrlKey) {
-            const selection = window.getSelection();
-            const selectedText = selection.toString().trim();
 
+            let selectedText;
+            
+            if (window.getSelection()) {
+                const selection = window.getSelection();
+                selectedText = selection.toString().trim();
+            }
+            else if (document.selection && document.selection.type !== 'Control') {
+                const inputElement = inputRef.current;
+                selectedText = inputElement.value.substring(inputElement.selectionStart, inputElement.selectionEnd);
+            }
+           
             if (selectedText !== '') {
                 const words = selectedText.split(/\s+/);
-                setSelectedWords([...selectedWords, ...words]);
+               
+                words.map((word)=>{
+                    if(selectedWords.includes(word)){
+                        const updatedWords = selectedWords.filter((words) => words !== selectedText);
+                        setSelectedWords(updatedWords);
+                    }
+                    else{
+                        setSelectedWords([...selectedWords, word]);
+                    }
 
-                // const newOption = [...props.questions];
-                // newOption[parentIndex].selectedWords=[...newOption[parentIndex].selectedWords,...words];
-                // props.setQuestions(newOption);
+                    return "";
+                });
+
             }
         }
     };
+
+    const makeBlank = (e) => {
+        e.preventDefault(); 
+        let selectedText;
+        if (window.getSelection()) {
+            const selection = window.getSelection();
+            selectedText = selection.toString().trim();
+        }
+        else if (document.selection && document.selection.type !== 'Control') {
+            const inputElement = inputRef.current;
+            selectedText = inputElement.value.substring(inputElement.selectionStart, inputElement.selectionEnd);
+        }
+
+        if (selectedText !== '') {
+            const words = selectedText.split(/\s+/);
+            
+            words.map((word)=>{
+                if(selectedWords.includes(word)){
+                    const updatedWords = selectedWords.filter((words) => words !== selectedText);
+                    setSelectedWords(updatedWords);
+                }
+                else{
+                    setSelectedWords([...selectedWords, word]);
+                }
+
+                return "";
+            });
+            
+           
+
+        }
+    }
 
     // to fire the handle key down function
     useEffect(() => {
@@ -43,9 +104,7 @@ const ClozeQuestion = (props) => {
 
     // handle add option
     const addOption = () => {
-        // setOptions([...options, ""]);
-        // setCorrectOption([...correctOption, false]);
-
+        
         const newOption = [...props.questions];
         newOption[parentIndex].options.push('');
         newOption[parentIndex].correctOptions.push(false);
@@ -54,14 +113,6 @@ const ClozeQuestion = (props) => {
 
     // handle remove option 
     const removeOption = (index) => {
-
-        // setOptions(options.filter((ele, i) => {
-        //     return i !== index;
-        // }));
-
-        // setCorrectOption(correctOption.filter((ele, i) => {
-        //     return i !== index;
-        // }));
 
         const newOption = [...props.questions];
         newOption[parentIndex].options.splice(index, 1);
@@ -72,20 +123,14 @@ const ClozeQuestion = (props) => {
 
     // Function to handle option   changes
     const handleOptionChange = (index, value) => {
-        // const newInputValues = [...options];
-        // newInputValues[index] = value;
-        // setOptions(newInputValues);
-
+       
         const newOption = [...props.questions];
         newOption[parentIndex].options[index] = value;
         props.setQuestions(newOption);
     };
     // Function to handle option   changes
     const handleCheckboxChange = (index, value) => {
-        // const newInputValues = [...correctOption];
-        // newInputValues[index] = value;
-        // setCorrectOption(newInputValues);
-
+       
         const newOption = [...props.questions];
         newOption[parentIndex].correctOptions[index] = value;
         props.setQuestions(newOption);
@@ -123,9 +168,8 @@ const ClozeQuestion = (props) => {
                     const newOption = [...props.questions];
                     newOption[parentIndex].sentence = e.target.value;
                     props.setQuestions(newOption);
-
-                    // setSentence(e.target.value) 
-                }} />
+                }} eleRef={inputRef} />
+                <button className='bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-1 px-2 border border-blue-500 text-[12px] hover:border-transparent rounded' onClick={(e)=>{makeBlank(e)}}>Make Blank</button>
 
 
                 <Label label="Create Option" />

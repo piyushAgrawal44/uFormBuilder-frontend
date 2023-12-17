@@ -7,16 +7,17 @@ import Label from './subcomponents/Label'
 import Input from './subcomponents/Input'
 import CloseButton from './subcomponents/CloseButton';
 import { Link, useNavigate } from "react-router-dom";
+import CustomLoader from './CustomLoader'
 // let backendURL = "http://localhost:8000"
 let backendURL = "https://u-form-builder-backend.vercel.app"
 export default function NewForm(props) {
-
+    const [loading, setLoading] = useState(false);
     const [type, setType] = useState("category-question");
     const [formTitle, setFormTitle] = useState("");
     const [currentFormId, setCurrentFormId] = useState(null)
     // all the questions will be saved into this
     const [questions, setQuestions] = useState([{ question_type: "category-question", questionTitle: "", categories: [""], options: [""], optionCategoryMapping: [""] }]);
-    const navigate=useNavigate();
+    const navigate = useNavigate();
     // handle add option
     const addQuestion = () => {
 
@@ -43,6 +44,7 @@ export default function NewForm(props) {
     };
 
     const save = async (status) => {
+
         // status ==1 means save as draft and 2 means save as final
         let data = {};
         data['form_title'] = formTitle;
@@ -51,16 +53,18 @@ export default function NewForm(props) {
         data['current_form_id'] = currentFormId;
 
         if (questions.length === 0 || formTitle === "") {
-            
-            const newAlert={ display: true, message: "Please enter all  user details", type: "danger" };
+
+            const newAlert = { display: true, message: "Please enter all  user details", type: "danger" };
             props.setAlert(newAlert);
-            
+
             setTimeout(() => {
-                const newAlert={ display: false, message: "", type: "danger" };
+                const newAlert = { display: false, message: "", type: "danger" };
                 props.setAlert(newAlert);
             }, 2000);
-            return ;
+            return;
         }
+
+        setLoading(true);
         try {
             // props.setProgress(10);
             const response = await fetch(backendURL + "/new/form", {
@@ -77,7 +81,7 @@ export default function NewForm(props) {
             // props.setProgress(100);
 
             if (!resultData.success) {
-                
+
                 const newAlert = { display: true, message: resultData.message, type: "danger" };
                 props.setAlert(newAlert);
 
@@ -87,9 +91,9 @@ export default function NewForm(props) {
                 }, 2000);
                 return;
             }
-
+            setLoading(false);
             // success
-            if(status===1){
+            if (status === 1) {
                 setCurrentFormId(resultData.data._id);
                 const newAlert = { display: true, message: "Form save successfully !", type: "success" };
                 props.setAlert(newAlert);
@@ -100,7 +104,7 @@ export default function NewForm(props) {
                 }, 2000);
                 return;
             }
-            else{
+            else {
                 setQuestions([{ question_type: "category-question", questionTitle: "", categories: [""], options: [""], optionCategoryMapping: [""] }]);
                 const newAlert = { display: true, message: "Form created successfully !", type: "success" };
                 props.setAlert(newAlert);
@@ -113,7 +117,9 @@ export default function NewForm(props) {
                 return;
             }
 
+
         } catch (error) {
+            setLoading(false);
             console.log(error.message);
             const newAlert = { display: true, message: "Internal server error", type: "danger" };
             props.setAlert(newAlert);
@@ -124,100 +130,112 @@ export default function NewForm(props) {
             }, 2000);
             return;
         }
+
+    }
+
+    const copyQuestion = (questionIndex) => {
+        let copyQuestion = questions[questionIndex];
+        const newQuestions=[...questions];
+
+        // Use splice to insert the new element after the specified index
+        newQuestions.splice(questionIndex + 1, 0, copyQuestion);
+        setQuestions(newQuestions);
     }
     return (
-        <div>
-            <section className='bg-blue-300 z-10 sticky top-0 flex justify-between items-center px-2 py-1'>
-                <Link to="/">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-arrow-left" viewBox="0 0 16 16">
-                        <path fillRule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8" />
-                    </svg>
-                </Link>
-                <div className='flex justify-end gap-2'>
-                    <Button text="Save" onclick={() => save(1)} />
-                    <Button text="Save & Proceed" onclick={() => save(2)} />
-                </div>
-            </section>
+        <div className='min-h-screen'>
+            {loading ? <CustomLoader /> :
+                (
+                    <div>
+                        <section className='bg-blue-300 z-10 sticky top-0 flex justify-between items-center px-2 py-1'>
+                            <Link to="/">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-arrow-left" viewBox="0 0 16 16">
+                                    <path fillRule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8" />
+                                </svg>
+                            </Link>
+                            <div className='flex justify-end gap-2'>
+                                <Button text="Save" onclick={() => save(1)} />
+                                <Button text="Save & Proceed" onclick={() => save(2)} />
+                            </div>
+                        </section>
 
 
 
-            <div className="p-2 bg-slate-100">
+                        <div className="p-2 bg-slate-100">
 
-                <Label label="Form Title" />
-                <Input type="text" name="form_title" placeholder="Type form title" value={formTitle} onchange={(e) => setFormTitle(e.target.value)} />
+                            <Label label="Form Title" />
+                            <Input type="text" name="form_title" placeholder="Type form title" value={formTitle} onchange={(e) => setFormTitle(e.target.value)} />
 
-                {/* <Label label="Header Image" isRequired={false} />
+                            {/* <Label label="Header Image" isRequired={false} />
                 <Input type="file" name="header_image" isRequired={false} /> */}
 
 
-                {
-                    questions.map(
-                        (e, index) => {
-                            return (
-                                <div key={index}>
-                                    {
-                                        e.question_type === "category-question" ?
-                                            <>
-                                                <br />
-                                                <CategorizeQuestion index={index} questionNo={index + 1} questions={questions} setQuestions={setQuestions} />
-                                                <div className="my-1 flex gap-2">
-                                                    {/* <Button text="Copy this question" /> */}
-                                                    <CloseButton onclick={() => removeQuestion(index)} />
-                                                </div>
-                                                <br />
-                                            </>
-                                            : (e.question_type === "cloze-question") ?
-                                                <>
-                                                    <br />
-                                                    <ClozeQuestion questionNo={index + 1} questions={questions} setQuestions={setQuestions} index={index} />
-                                                    <div className="my-1 flex gap-2">
-                                                        {/* <Button text="Copy this question" /> */}
-                                                        <CloseButton onclick={() => removeQuestion(index)} />
-                                                    </div>
-                                                    <br />
-                                                </>
-                                                :
-                                                <>
-                                                    <br />
-                                                    <ComprehensionQuestion questionNo={index + 1} index={index} questions={questions} setQuestions={setQuestions} />
-                                                    <div className="my-1 flex gap-2">
-                                                        {/* <Button text="Copy this question" /> */}
-                                                        <CloseButton onclick={() => removeQuestion(index)} />
-                                                    </div>
-                                                    <br />
-                                                </>
+                            {
+                                questions.map(
+                                    (e, index) => {
+                                        return (
+                                            <div key={index}>
+                                                {
+                                                    e.question_type === "category-question" ?
+                                                        <>
+                                                            <br />
+                                                            <CategorizeQuestion index={index} questionNo={index + 1} questions={questions} setQuestions={setQuestions} />
+                                                            <div className="my-1 flex gap-2">
+                                                                {/* <Button text="Copy this question" /> */}
+                                                                <Button text="Copy this question" onclick={() => copyQuestion(index)} />
+                                                                <CloseButton onclick={() => removeQuestion(index)} />
+                                                            </div>
+                                                            
+                                                        </>
+                                                        : (e.question_type === "cloze-question") ?
+                                                            <>
+                                                                <br />
+                                                                <ClozeQuestion questionNo={index + 1} questions={questions} setQuestions={setQuestions} index={index} />
+                                                                <div className="my-1 flex gap-2">
+                                                                    {/* <Button text="Copy this question" /> */}
+                                                                    <Button text="Copy this question" onclick={() => copyQuestion(index)} />
+                                                                    <CloseButton onclick={() => removeQuestion(index)} />
+                                                                </div>
+                                                               
+                                                            </>
+                                                            :
+                                                            <>
+                                                                <br />
+                                                                <ComprehensionQuestion questionNo={index + 1} index={index} questions={questions} setQuestions={setQuestions} />
+                                                                <div className="my-1 flex gap-2">
+                                                                    <Button text="Copy this question" onclick={() => copyQuestion(index)} />
+
+                                                                    <CloseButton onclick={() => removeQuestion(index)} />
+                                                                </div>
+                                                            </>
+                                                }
+                                            </div>
+                                        )
                                     }
+                                )
+                            }
+
+                            {/* <MyComponent /> */}
+                            <br />
+                            <div className='flex justify-start items-center gap-3'>
+
+                                <div className="inline-block relative mb-1">
+                                    <select className="block appearance-none w-full bg-white border   px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-blue-400 focus:shadow-outline" onChange={(e) => setType(e.target.value)}>
+                                        <option value="category-question">Category Question</option>
+                                        <option value="cloze-question">Cloze Question</option>
+                                        <option value="comprehension-question">Comprehension Question</option>
+
+                                    </select>
+                                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                                        <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /></svg>
+                                    </div>
                                 </div>
-                            )
-                        }
-                    )
-                }
 
-
-
-
-
-
-
-                {/* <MyComponent /> */}
-
-                <div className='flex justify-start items-center gap-3'>
-
-                    <div className="inline-block relative ">
-                        <select className="block appearance-none w-full bg-white border   px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-blue-400 focus:shadow-outline" onChange={(e) => setType(e.target.value)}>
-                            <option value="category-question">Category Question</option>
-                            <option value="cloze-question">Cloze Question</option>
-                            <option value="comprehension-question">Comprehension Question</option>
-
-                        </select>
-                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                            <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /></svg>
+                                <Button text="Add Question" onclick={() => addQuestion()} />
+                            </div>
                         </div>
                     </div>
-
-                    <Button text="Add Question" onclick={() => addQuestion()} />
-                </div>
-            </div>
+                )
+            }
         </div>
     )
 }
