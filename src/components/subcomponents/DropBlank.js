@@ -20,21 +20,19 @@ function DropBlank(props) {
         if (newData.questions[props.questionIndex].userAnswer === undefined)
             newData.questions[props.questionIndex].userAnswer = [];
 
-
-            newData.questions[props.questionIndex].userAnswer[props.sentenceIndex] = parseInt(optionIndex);
-            props.setFormData(newData);
-
-
+        console.log(props.sentenceIndex)
+        newData.questions[props.questionIndex].userAnswer[props.sentenceIndex] = parseInt(optionIndex);
+        props.setFormData(newData);
     }
     // droppable="true" onDragOver={(e) => { draggingOver(e) }} onDrop={(e) => draggingEnd(e, categoryIndex, props.questionIndex)}
     return (
         <>
            
-            <div key={props.sentenceIndex} className={`inline-block min-w-[50px] min-h-[20px] mr-2 border  border-yellow-300 rounded p-2 ${isOver?'bg-gray-200':""}`} ref={drop}>
+            <div key={props.sentenceIndex} className={`flex min-w-[60px] min-h-[30px] justify-center  items-center mr-2 border  border-yellow-300 rounded px-2 text-sm ${isOver?'bg-gray-200':""}`} ref={drop}>
                 {
                     props.question.userAnswer !== undefined ?
                         props.question.userAnswer.map((optionIndex, ansIndex) => {
-                            if (optionIndex !== undefined && optionIndex !== null)
+                            if (optionIndex !== null && ansIndex===props.sentenceIndex)
                             return <DragOption key={ansIndex} option={props.question.options[optionIndex]} optionIndex={props.sentenceIndex} type="selected_option" />
                                
                             else

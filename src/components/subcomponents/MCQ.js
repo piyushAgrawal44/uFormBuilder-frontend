@@ -75,7 +75,7 @@ export default function MCQ(props) {
   return (
     <>
       <div className='p-4 bg-slate-200 mb-2 rounded-md'>
-        <h6 className='font-bold'>MCQ #{props.index+1}</h6>
+        <h6 className='font-bold'>MCQ #{mcqIndex+1}</h6>
         <Label label="Question" />
         <Input
           type="text"

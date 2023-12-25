@@ -54,7 +54,7 @@ export default function NewForm(props) {
 
         if (questions.length === 0 || formTitle === "") {
 
-            const newAlert = { display: true, message: "Please enter all  user details", type: "danger" };
+            const newAlert = { display: true, message: "Please enter all required details", type: "danger" };
             props.setAlert(newAlert);
 
             setTimeout(() => {

@@ -83,7 +83,7 @@ function ViewResponse(props) {
 
     return (
         <>
-            <div className='w-[100%]  bg-[#f2f3ff] '>
+            <div className='w-[100%] min-h-screen bg-[#f2f3ff] '>
 
                 <div className="max-w-[576px] mx-auto p-2 py-5 text-start">
                     <h5 className='mb-2 text-xl font-bold text-gray-600'>{formData.title}</h5>
@@ -108,20 +108,18 @@ function ViewResponse(props) {
                             if (question.question_type === "category-question") {
                                 return (
                                     <>
-                                        <ViewCategoryQuestion key={questionIndex} questionIndex={questionIndex} question={question} formData={formData} setFormData={setFormData} />
-
-
+                                        <ViewCategoryQuestion key={questionIndex} questionIndex={questionIndex} question={question} formData={formData} setFormData={setFormData} showAns={true} />
                                     </>
                                 );
                             }
                             else if (question.question_type === "cloze-question") {
                                 return (
-                                    <ViewClozeQuestion key={questionIndex} questionIndex={questionIndex} question={question} formData={formData} setFormData={setFormData} />
+                                    <ViewClozeQuestion key={questionIndex} questionIndex={questionIndex} question={question} formData={formData} setFormData={setFormData} showAns={true} />
                                 );
                             }
                             else {
                                 return (
-                                    <ViewComprehensionQuestion key={questionIndex} questionIndex={questionIndex} question={question} formData={formData} setFormData={setFormData} />
+                                    <ViewComprehensionQuestion key={questionIndex} questionIndex={questionIndex} question={question} formData={formData} setFormData={setFormData} showAns={true} />
                                 );
                             }
 

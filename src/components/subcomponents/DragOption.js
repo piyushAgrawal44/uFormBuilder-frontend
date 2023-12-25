@@ -12,7 +12,7 @@ function DragOption(props) {
     // draggable="true" onDragStart={(e) => draggingStart(e, optionIndex)} droppable="true" onDragOver={(e) => draggingOver(e)} onDrop={(e) => draggingEnd2(e, props.questionIndex)}
     return (
         <>
-            <div className={`rounded border border-blue-300 px-2 py-1 mb-1 mr-1 cursor-move ${isDragging ? 'opacity-25' : 'opacity-100'}`}
+            <div className={`w-fit rounded border border-blue-300 px-2 py-1 m-1 cursor-move ${isDragging ? 'opacity-25' : 'opacity-100'}`}
                 ref={drag}
             >
                 {props.option}
@@ -20,5 +20,6 @@ function DragOption(props) {
         </>
     )
 }
+
 
 export default DragOption
