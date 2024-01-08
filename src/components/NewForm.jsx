@@ -1,4 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
+import { useSelector, useDispatch } from "react-redux";
+import { actions } from '../reducers/formbuilder/createFormSlice';
 import Button from './subcomponents/Button'
 import CategorizeQuestion from './subcomponents/CategorizeQuestion'
 import ClozeQuestion from './subcomponents/ClozeQuestion'
@@ -7,41 +9,24 @@ import Label from './subcomponents/Label'
 import Input from './subcomponents/Input'
 import CloseButton from './subcomponents/CloseButton';
 import { Link, useNavigate } from "react-router-dom";
-import CustomLoader from './CustomLoader'
+import CustomLoader from './CustomLoader';
+import CopyButton from './subcomponents/CopyButton';
+
 // let backendURL = "http://localhost:8000"
 let backendURL = "https://u-form-builder-backend.vercel.app"
 export default function NewForm(props) {
+
+    const questions = useSelector((state) => state.questions);
+    const dispatch = useDispatch();
+
     const [loading, setLoading] = useState(false);
     const [type, setType] = useState("category-question");
+
     const [formTitle, setFormTitle] = useState("");
-    const [currentFormId, setCurrentFormId] = useState(null)
-    // all the questions will be saved into this
-    const [questions, setQuestions] = useState([{ question_type: "category-question", questionTitle: "", categories: [""], options: [""], optionCategoryMapping: [""] }]);
+    const [currentFormId, setCurrentFormId] = useState(null);
+
     const navigate = useNavigate();
-    // handle add option
-    const addQuestion = () => {
 
-        let temQuestion;
-        if (type === "category-question") {
-            temQuestion = { question_type: "category-question", questionTitle: "", categories: [""], options: [""], optionCategoryMapping: [""] };
-        }
-        else if (type === "cloze-question") {
-            temQuestion = { question_type: "cloze-question", sentence: "", options: [""], correctOptions: [""], selectedWords: [''] };
-        }
-        else {
-            temQuestion = { question_type: "comprehension-question", paragraph: "", mcq: [{ question: "", options: [''], correctOptions: [false] }] };
-        }
-
-        setQuestions([...questions, temQuestion]);
-
-    };
-
-    // handle remove Question 
-    const removeQuestion = (index) => {
-        setQuestions(questions.filter((ele, i) => {
-            return i !== index;
-        }));
-    };
 
     const save = async (status) => {
 
@@ -75,10 +60,7 @@ export default function NewForm(props) {
                 },
                 body: JSON.stringify(data) // body data type must match "Content-Type" header
             });
-            // props.setProgress(60);
-
             const resultData = await response.json();
-            // props.setProgress(100);
 
             if (!resultData.success) {
 
@@ -105,7 +87,7 @@ export default function NewForm(props) {
                 return;
             }
             else {
-                setQuestions([{ question_type: "category-question", questionTitle: "", categories: [""], options: [""], optionCategoryMapping: [""] }]);
+                dispatch(actions.clearQuestion());
                 const newAlert = { display: true, message: "Form created successfully !", type: "success" };
                 props.setAlert(newAlert);
 
@@ -133,28 +115,22 @@ export default function NewForm(props) {
 
     }
 
-    const copyQuestion = (questionIndex) => {
-        let copyQuestion = questions[questionIndex];
-        const newQuestions=[...questions];
 
-        // Use splice to insert the new element after the specified index
-        newQuestions.splice(questionIndex + 1, 0, copyQuestion);
-        setQuestions(newQuestions);
-    }
+
     return (
         <div className='min-h-screen'>
             {loading ? <CustomLoader /> :
                 (
                     <div>
-                        <section className='bg-blue-300 z-10 sticky top-0 flex justify-between items-center px-2 py-1'>
+                        <section className='bg-blue-300 z-10 sticky top-0 flex justify-between items-center px-2 py-2'>
                             <Link to="/">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-arrow-left" viewBox="0 0 16 16">
                                     <path fillRule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8" />
                                 </svg>
                             </Link>
                             <div className='flex justify-end gap-2'>
-                                <Button text="Save" onclick={() => save(1)} />
-                                <Button text="Save & Proceed" onclick={() => save(2)} />
+                                <Button text="Save Draft" onclick={() => save(1)} />
+                                <Button text="Proceed" onclick={() => save(2)} />
                             </div>
                         </section>
 
@@ -166,59 +142,57 @@ export default function NewForm(props) {
                             <Input type="text" name="form_title" placeholder="Type form title" value={formTitle} onchange={(e) => setFormTitle(e.target.value)} />
 
                             {/* <Label label="Header Image" isRequired={false} />
-                <Input type="file" name="header_image" isRequired={false} /> */}
+                                <Input type="file" name="header_image" isRequired={false} /> */}
 
+
+                            <br />
 
                             {
-                                questions.map(
-                                    (e, index) => {
-                                        return (
-                                            <div key={index}>
-                                                {
-                                                    e.question_type === "category-question" ?
-                                                        <>
-                                                            <br />
-                                                            <CategorizeQuestion index={index} questionNo={index + 1} questions={questions} setQuestions={setQuestions} />
-                                                            <div className="my-1 flex gap-2">
-                                                                {/* <Button text="Copy this question" /> */}
-                                                                <Button text="Copy this question" onclick={() => copyQuestion(index)} />
-                                                                <CloseButton onclick={() => removeQuestion(index)} />
-                                                            </div>
-                                                            
-                                                        </>
-                                                        : (e.question_type === "cloze-question") ?
-                                                            <>
-                                                                <br />
-                                                                <ClozeQuestion questionNo={index + 1} questions={questions} setQuestions={setQuestions} index={index} />
-                                                                <div className="my-1 flex gap-2">
-                                                                    {/* <Button text="Copy this question" /> */}
-                                                                    <Button text="Copy this question" onclick={() => copyQuestion(index)} />
-                                                                    <CloseButton onclick={() => removeQuestion(index)} />
-                                                                </div>
-                                                               
-                                                            </>
-                                                            :
-                                                            <>
-                                                                <br />
-                                                                <ComprehensionQuestion questionNo={index + 1} index={index} questions={questions} setQuestions={setQuestions} />
-                                                                <div className="my-1 flex gap-2">
-                                                                    <Button text="Copy this question" onclick={() => copyQuestion(index)} />
+                                questions.map((e, index) => {
+                                    const commonElements = (
+                                        <>
 
-                                                                    <CloseButton onclick={() => removeQuestion(index)} />
-                                                                </div>
-                                                            </>
-                                                }
+                                            <div className="mt-1 flex items-center gap-2">
+                                                <CopyButton text="Copy " onclick={() => dispatch(actions.copyQuestion(index))} />
                                             </div>
-                                        )
-                                    }
-                                )
+                                            <div className='absolute top-0 right-0'>
+                                                <CloseButton onclick={() => dispatch(actions.removeQuestion(index))} />
+                                            </div>
+                                        </>
+                                    );
+
+                                    return (
+                                        <div key={index}>
+                                            {e.question_type === "category-question" && (
+                                                <div className='mb-4 relative'>
+                                                    <CategorizeQuestion index={index} questionNo={index + 1} />
+                                                    {commonElements}
+                                                </div>
+                                            )}
+                                            {e.question_type === "cloze-question" && (
+                                                <div className='mb-4 relative'>
+                                                    <ClozeQuestion questionNo={index + 1} index={index} />
+                                                    {commonElements}
+                                                </div>
+                                            )}
+                                            {e.question_type === "comprehension-question" && (
+                                                <div className='mb-4 relative'>
+                                                    <ComprehensionQuestion questionNo={index + 1} index={index} />
+                                                    {commonElements}
+                                                </div>
+                                            )}
+
+                                           
+                                        </div>
+                                    );
+                                })
                             }
 
                             {/* <MyComponent /> */}
-                            <br />
-                            <div className='flex justify-start items-center gap-3'>
 
-                                <div className="inline-block relative mb-1">
+                            <div className='flex justify-start items-center gap-3 mt-5 mb-2'>
+
+                                <div className="inline-block relative">
                                     <select className="block appearance-none w-full bg-white border   px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-blue-400 focus:shadow-outline" onChange={(e) => setType(e.target.value)}>
                                         <option value="category-question">Category Question</option>
                                         <option value="cloze-question">Cloze Question</option>
@@ -230,7 +204,7 @@ export default function NewForm(props) {
                                     </div>
                                 </div>
 
-                                <Button text="Add Question" onclick={() => addQuestion()} />
+                                <Button text="Add Question" onclick={() => dispatch(actions.addQuestion(type))} />
                             </div>
                         </div>
                     </div>

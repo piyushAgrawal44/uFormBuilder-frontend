@@ -36,7 +36,7 @@ export default function Home() {
   return (
     <div className="bg-slate-100 p-2 h-screen">
       <br />
-      <h1 className=' text-center font-semibold text-3xl'>Welcome to uFormBuilder</h1>
+      <h1 className=' text-center font-semibold text-3xl'>Welcome to QuizMingo</h1>
       <br />
       <br />
       <div className="d-flex text-end">

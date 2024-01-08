@@ -3,7 +3,7 @@ import React from 'react'
 export default function Select(props) {
     return (
         <>
-            <div className="inline-block relative mr-1 mb-2 ">
+            <div className="inline-block relative mr-1">
                 <select className="block appearance-none w-full bg-white border px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-blue-400 focus:shadow-outline" onChange={props.onchange} value={props.selected}>
                     <option value="">{props.text}</option>
                     {

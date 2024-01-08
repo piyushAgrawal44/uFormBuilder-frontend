@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import Button from './subcomponents/Button'
+import Button from './subcomponents/Button';
+import CopyButton from './subcomponents/CopyButton';
+
 import CategorizeQuestion from './subcomponents/CategorizeQuestion'
 import ClozeQuestion from './subcomponents/ClozeQuestion'
 import ComprehensionQuestion from './subcomponents/ComprehensionQuestion'
@@ -7,9 +9,20 @@ import Label from './subcomponents/Label'
 import Input from './subcomponents/Input'
 import CloseButton from './subcomponents/CloseButton';
 import { Link, useNavigate } from "react-router-dom";
-// let backendURL = "http://localhost:8000"
-let backendURL = "https://u-form-builder-backend.vercel.app"
+import { useSelector, useDispatch } from "react-redux";
+import { actions } from '../reducers/formbuilder/createFormSlice';
+
+
+// let backendURL = "http://localhost:8000";
+let backendURL = "https://u-form-builder-backend.vercel.app";
+
+
+
 export default function EditForm(props) {
+
+    let questions = useSelector((state) => state.questions);
+    const dispatch = useDispatch();
+
     const urlParams = new URL(window.location.href).searchParams;
     const id = urlParams.get('id');
     const navigate = useNavigate();
@@ -18,7 +31,7 @@ export default function EditForm(props) {
     const [formTitle, setFormTitle] = useState("");
     const [currentFormId, setCurrentFormId] = useState(id)
     // all the questions will be saved into this
-    const [questions, setQuestions] = useState([{ question_type: "category-question", questionTitle: "", categories: [""], options: [""], optionCategoryMapping: [""] }]);
+    // const [questions, setQuestions] = useState([{ question_type: "category-question", questionTitle: "", categories: [""], options: [""], optionCategoryMapping: [""] }]);
 
     const fetchData = async () => {
         try {
@@ -47,7 +60,9 @@ export default function EditForm(props) {
             let data = resultData.data[0];
             data.questions = JSON.parse(data.questions);
             setFormTitle(data.title);
-            setQuestions(data.questions);
+            questions = data.questions;
+
+            dispatch(actions.updateQuestions(data.questions));
 
         } catch (error) {
 
@@ -69,30 +84,8 @@ export default function EditForm(props) {
     }, []);
 
 
-    // handle add option
-    const addQuestion = () => {
+    
 
-        let temQuestion;
-        if (type === "category-question") {
-            temQuestion = { question_type: "category-question", questionTitle: "", categories: [""], options: [""], optionCategoryMapping: [""] };
-        }
-        else if (type === "cloze-question") {
-            temQuestion = { question_type: "cloze-question", sentence: "", options: [""], correctOptions: [""], selectedWords: [''] };
-        }
-        else {
-            temQuestion = { question_type: "comprehension-question", paragraph: "", mcq: [{ question: "", options: [''], correctOptions: [false] }] };
-        }
-
-        setQuestions([...questions, temQuestion]);
-
-    };
-
-    // handle remove Question 
-    const removeQuestion = (index) => {
-        setQuestions(questions.filter((ele, i) => {
-            return i !== index;
-        }));
-    };
 
     const save = async (status) => {
         // status ==1 means save as draft and 2 means save as final
@@ -139,9 +132,9 @@ export default function EditForm(props) {
                 }, 2000);
                 return;
             }
-            
+
             // success
-            if(status===1){
+            if (status === 1) {
                 setCurrentFormId(resultData.data._id);
                 const newAlert = { display: true, message: "Form save successfully !", type: "success" };
                 props.setAlert(newAlert);
@@ -152,8 +145,8 @@ export default function EditForm(props) {
                 }, 2000);
                 return;
             }
-            else{
-                setQuestions([{ question_type: "category-question", questionTitle: "", categories: [""], options: [""], optionCategoryMapping: [""] }]);
+            else {
+                dispatch(actions.clearQuestion());
                 const newAlert = { display: true, message: "Form created successfully !", type: "success" };
                 props.setAlert(newAlert);
 
@@ -179,15 +172,15 @@ export default function EditForm(props) {
     }
     return (
         <div>
-            <section className='bg-blue-300 z-10 sticky top-0 flex justify-between items-center px-2 py-1'>
+            <section className='bg-blue-300 z-10 sticky top-0 flex justify-between items-center px-2 py-2'>
                 <Link to="/">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-arrow-left" viewBox="0 0 16 16">
                         <path fillRule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8" />
                     </svg>
                 </Link>
                 <div className='flex justify-end gap-2'>
-                    <Button text="Save as draft" onclick={() => save(1)} />
-                    <Button text="Save and proceed" onclick={() => save(2)} />
+                    <Button text="Save draft" onclick={() => save(1)} />
+                    <Button text="Proceed" onclick={() => save(2)} />
                 </div>
             </section>
 
@@ -201,48 +194,46 @@ export default function EditForm(props) {
                 {/* <Label label="Header Image" isRequired={false} />
                 <Input type="file" name="header_image" isRequired={false} /> */}
 
-
+                <br />
                 {
-                    questions.map(
-                        (e, index) => {
-                            return (
-                                <div key={index}>
-                                    {
-                                        e.question_type === "category-question" ?
-                                            <>
-                                                <br />
-                                                <CategorizeQuestion index={index} questionNo={index + 1} questions={questions} setQuestions={setQuestions} />
-                                                <div className="my-1 flex gap-2">
-                                                    {/* <Button text="Copy this question" /> */}
-                                                    <CloseButton onclick={() => removeQuestion(index)} />
-                                                </div>
-                                                <br />
-                                            </>
-                                            : (e.question_type === "cloze-question") ?
-                                                <>
-                                                    <br />
-                                                    <ClozeQuestion questionNo={index + 1} questions={questions} setQuestions={setQuestions} index={index} />
-                                                    <div className="my-1 flex gap-2">
-                                                        {/* <Button text="Copy this question" /> */}
-                                                        <CloseButton onclick={() => removeQuestion(index)} />
-                                                    </div>
-                                                    <br />
-                                                </>
-                                                :
-                                                <>
-                                                    <br />
-                                                    <ComprehensionQuestion questionNo={index + 1} index={index} questions={questions} setQuestions={setQuestions} />
-                                                    <div className="my-1 flex gap-2">
-                                                        {/* <Button text="Copy this question" /> */}
-                                                        <CloseButton onclick={() => removeQuestion(index)} />
-                                                    </div>
-                                                    <br />
-                                                </>
-                                    }
+                    questions.map((e, index) => {
+                        const commonElements = (
+                            <>
+
+                                <div className="mt-1 flex items-center gap-2">
+                                    <CopyButton text="Copy " onclick={() => dispatch(actions.copyQuestion(index))} />
                                 </div>
-                            )
-                        }
-                    )
+                                <div className='absolute top-0 right-0'>
+                                    <CloseButton onclick={() => dispatch(actions.removeQuestion(index))} />
+                                </div>
+                            </>
+                        );
+
+                        return (
+                            <div key={index}>
+                                {e.question_type === "category-question" && (
+                                    <div className='mb-4 relative'>
+                                        <CategorizeQuestion index={index} questionNo={index + 1} />
+                                        {commonElements}
+                                    </div>
+                                )}
+                                {e.question_type === "cloze-question" && (
+                                    <div className='mb-4 relative'>
+                                        <ClozeQuestion questionNo={index + 1} index={index} />
+                                        {commonElements}
+                                    </div>
+                                )}
+                                {e.question_type === "comprehension-question" && (
+                                    <div className='mb-4 relative'>
+                                        <ComprehensionQuestion questionNo={index + 1} index={index} />
+                                        {commonElements}
+                                    </div>
+                                )}
+
+
+                            </div>
+                        );
+                    })
                 }
 
 
@@ -267,7 +258,7 @@ export default function EditForm(props) {
                         </div>
                     </div>
 
-                    <Button text="Add Question" onclick={() => addQuestion()} />
+                    <Button text="Add Question" onclick={() => dispatch(actions.addQuestion(type))} />
                 </div>
             </div>
         </div>

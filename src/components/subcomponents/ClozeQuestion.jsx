@@ -1,12 +1,15 @@
 import React, { useEffect, useState, memo, useRef } from 'react'
-import Button from './Button'
+import AddButton from './AddButton'
 import Label from './Label'
 import Input from './Input'
 import Option from './Option'
-import CloseButton from './CloseButton'
+import CloseButton from './CloseButton';
+import { useDispatch, useSelector } from "react-redux";
+import { actions } from '../../reducers/formbuilder/createFormSlice';
 
 const ClozeQuestion = (props) => {
-    
+    const questions = useSelector(state => state.questions)
+    const dispatch = useDispatch();
     const [selectedWords, setSelectedWords] = useState([]);
     const inputRef = useRef(null);
 
@@ -31,7 +34,7 @@ const ClozeQuestion = (props) => {
         if (e.key === 'u' && e.ctrlKey) {
 
             let selectedText;
-            
+
             if (window.getSelection()) {
                 const selection = window.getSelection();
                 selectedText = selection.toString().trim();
@@ -40,16 +43,16 @@ const ClozeQuestion = (props) => {
                 const inputElement = inputRef.current;
                 selectedText = inputElement.value.substring(inputElement.selectionStart, inputElement.selectionEnd);
             }
-           
+
             if (selectedText !== '') {
                 const words = selectedText.split(/\s+/);
-               
-                words.map((word)=>{
-                    if(selectedWords.includes(word)){
+
+                words.map((word) => {
+                    if (selectedWords.includes(word)) {
                         const updatedWords = selectedWords.filter((words) => words !== selectedText);
                         setSelectedWords(updatedWords);
                     }
-                    else{
+                    else {
                         setSelectedWords([...selectedWords, word]);
                     }
 
@@ -61,7 +64,7 @@ const ClozeQuestion = (props) => {
     };
 
     const makeBlank = (e) => {
-        e.preventDefault(); 
+        e.preventDefault();
         let selectedText;
         if (window.getSelection()) {
             const selection = window.getSelection();
@@ -72,22 +75,21 @@ const ClozeQuestion = (props) => {
             selectedText = inputElement.value.substring(inputElement.selectionStart, inputElement.selectionEnd);
         }
 
+        
         if (selectedText !== '') {
             const words = selectedText.split(/\s+/);
-            
-            words.map((word)=>{
-                if(selectedWords.includes(word)){
+
+            words.map((word) => {
+                if (selectedWords.includes(word)) {
                     const updatedWords = selectedWords.filter((words) => words !== selectedText);
                     setSelectedWords(updatedWords);
                 }
-                else{
+                else {
                     setSelectedWords([...selectedWords, word]);
                 }
 
                 return "";
             });
-            
-           
 
         }
     }
@@ -102,38 +104,23 @@ const ClozeQuestion = (props) => {
         // eslint-disable-next-line
     }, []);
 
-    // handle add option
-    const addOption = () => {
-        
-        const newOption = [...props.questions];
-        newOption[parentIndex].options.push('');
-        newOption[parentIndex].correctOptions.push(false);
-        props.setQuestions(newOption);
-    };
 
-    // handle remove option 
-    const removeOption = (index) => {
 
-        const newOption = [...props.questions];
-        newOption[parentIndex].options.splice(index, 1);
-        newOption[parentIndex].correctOptions.splice(index, 1);
-        props.setQuestions(newOption);
 
-    };
 
     // Function to handle option   changes
     const handleOptionChange = (index, value) => {
-       
-        const newOption = [...props.questions];
-        newOption[parentIndex].options[index] = value;
-        props.setQuestions(newOption);
+
+
+        dispatch(actions.updateOptionValue({ questionId: parentIndex, optionIndex: index, value: value }))
     };
+
+
     // Function to handle option   changes
     const handleCheckboxChange = (index, value) => {
-       
-        const newOption = [...props.questions];
-        newOption[parentIndex].correctOptions[index] = value;
-        props.setQuestions(newOption);
+
+
+        dispatch(actions.checkboxChange({ questionId: parentIndex, optionIndex: index, value: value }));
     };
 
     return (
@@ -145,8 +132,8 @@ const ClozeQuestion = (props) => {
 
                 <h5 className='font-medium'>Preview </h5>
 
-                <div className='font-normal mb-2' id='preview'>
-                    {props.questions[parentIndex].sentence.split(' ').map((word, index) => {
+                <div className='font-normal mb-2 text-start' id='preview'>
+                    {questions[parentIndex].sentence.split(' ').map((word, index) => {
                         return (
                             <span key={index}>
                                 {
@@ -160,33 +147,36 @@ const ClozeQuestion = (props) => {
                                 }
                             </span>
                         )
-                    })}
+                    })
+                    }
+                    {questions[parentIndex].sentence==='' && <span className='text-gray-400'>Type something to preview...</span>}
                 </div>
 
                 <Label label="Write Sentence (Select word and hit Control + U to make blank) " />
-                <Input type="text" name="sentence" placeholder="Type here" value={props.questions[parentIndex].sentence} onchange={(e) => {
-                    const newOption = [...props.questions];
-                    newOption[parentIndex].sentence = e.target.value;
-                    props.setQuestions(newOption);
+                <Input type="text" name="sentence" placeholder="Type here" value={questions[parentIndex].sentence} onchange={(e) => {
+
+                    dispatch(actions.updateSentenceValue({ questionId: parentIndex, value: e.target.value }))
                 }} eleRef={inputRef} />
-                <button className='bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-1 px-2 border border-blue-500 text-[12px] hover:border-transparent rounded' onClick={(e)=>{makeBlank(e)}}>Make Blank</button>
+                <button className='my-2 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-1 px-2 border border-blue-500 text-[12px] hover:border-transparent rounded' onClick={(e) => { makeBlank(e) }}>Make Blank</button>
 
 
                 <Label label="Create Option" />
                 {
-                    props.questions[parentIndex].options.map((ele, index) => {
+                    questions[parentIndex].options.map((ele, index) => {
                         return (
-                            <div key={index} className='flex items-center gap-5'>
-                                <Option type="text" name="option" placeholder="Option" checkboxValue={props.questions[parentIndex].correctOptions[index]} inputValue={ele} label="Options" checkboxClick={(e) => handleCheckboxChange(index, e.target.checked ? true : false)} inputChange={(e) => handleOptionChange(index, e.target.value)} />
+                            <div key={index} className='flex items-center gap-5 p-1'>
+                                <Option type="text" name="option" placeholder="Option" checkboxValue={questions[parentIndex].correctOptions[index]} inputValue={ele} label="Options" checkboxClick={(e) => handleCheckboxChange(index, e.target.checked ? true : false)} inputChange={(e) => handleOptionChange(index, e.target.value)} />
 
-                                <CloseButton text="X" onclick={() => removeOption(index)} />
+                                <CloseButton text="X" onclick={() => dispatch(actions.removeOption({ questionId: parentIndex, optionIndex: index, question_type: "cloze-question" }))} />
                             </div>
                         )
                     })
                 }
 
-                <br />
-                <Button text="Add option" onclick={addOption} />
+
+                <div className="mt-2">
+                    <AddButton text="Add" onclick={() => dispatch(actions.addOption({ questionId: parentIndex, question_type: "cloze-question" }))} />
+                </div>
             </div>
 
         </>
