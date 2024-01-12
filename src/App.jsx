@@ -12,8 +12,9 @@ import ViewResponse from "./components/ViewResponse";
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { TouchBackend } from 'react-dnd-touch-backend';
-import LoginPage from "./components/LoginPage";
-import SignupPage from "./components/SignupPage";
+import LoginPage from "./components/user_authentication/LoginPage";
+import SignupPage from "./components/user_authentication/SignupPage";
+import ForgotPasswordPage from "./components/user_authentication/ForgotPassword";
 function App() {
   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
   const Backend = isMobile ? TouchBackend : HTML5Backend;
@@ -22,7 +23,7 @@ function App() {
     <DndProvider backend={Backend}>
       <div className="bg-[#f5f5f5] min-h-screen">
 
-        {alert.display && <div className=" relative ">
+        {alert.display && <div className="relative ">
           <Alert message={alert.message} type={alert.type} />
         </div>
         }
@@ -34,6 +35,7 @@ function App() {
 
             <Route exact path='/login' element={<LoginPage />} />
             <Route exact path='/signup' element={<SignupPage />} />
+            <Route exact path='/forgot-password' element={<ForgotPasswordPage setAlert={setAlert} />} />
 
 
 

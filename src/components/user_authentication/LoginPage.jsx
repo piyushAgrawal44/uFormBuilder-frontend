@@ -1,8 +1,8 @@
 import React, { useRef, useState } from 'react';
-import { Link} from "react-router-dom";
-import LoginPageImage from "../images/login_page.webp";
-import QuizMingoLogo from "../images/quizmingo-logo.png";
-import Label from './subcomponents/Label';
+import { Link } from "react-router-dom";
+import LoginPageImage from "../../images/login_page.webp";
+import QuizMingoLogo from "../../images/quizmingo-logo.png";
+import Label from '../subcomponents/Label';
 export default function LoginPage() {
     const [showPassword, setShowPassword] = useState(false)
     const password = useRef(null)
@@ -16,9 +16,9 @@ export default function LoginPage() {
                             <div className="text-center mb-2">
                                 <img src={QuizMingoLogo} className='img-fluid max-w-[200px] ' alt="logo" />
                             </div>
-                            <h1 className='font-bold text-xl sm:text-3xl mb-5'>Login to Your Account!</h1>
-                            <div className='grid sm:flex gap-5 justify-center mt-2'>
-                                <button className='bg-black rounded-2xl text-white py-3 px-5 text-lg font-medium transition-all hover:shadow-[5px_5px_rgba(0,0,0,1)] focus:shadow-[5px_5px_rgba(0,0,0,1)]'>Login with Google</button>
+                            <h1 className=' font-bold text-xl sm:text-3xl'>Login to Your Account!</h1>
+                            <div className='grid sm:flex gap-5 justify-center mt-7'>
+                                <button className='bg-gray-800 text-white rounded-2xl border-2 border-black py-3 px-5 text-lg font-medium transition-all hover:shadow-[5px_5px_rgba(0,0,0,1)] focus:shadow-[5px_5px_rgba(0,0,0,1)]'>Login with Google</button>
                                 <button className='bg-white rounded-2xl text-black py-3 px-5 text-lg font-medium border-2 border-black transition-all hover:shadow-[5px_5px_rgba(0,0,0,1)] focus:shadow-[5px_5px_rgba(0,0,0,1)] '>Login with Apple</button>
                             </div>
                             <p className='text-center my-4 text-xl text-gray-500'>-OR-</p>
@@ -37,23 +37,23 @@ export default function LoginPage() {
                                         password.current.type = password.current.type === "text" ? "password" : "text";
                                         setShowPassword(!showPassword);
                                     }}>
-                                        {!showPassword && <i class="bi bi-eye"></i>}
-                                        {showPassword && <i class="bi bi-eye-slash"></i>}
+                                        {!showPassword && <i className="bi bi-eye"></i>}
+                                        {showPassword && <i className="bi bi-eye-slash"></i>}
                                     </button>
                                 </div>
                                 <div className="flex justify-between mt-3">
-                                    <div class="flex items-center gap-1 mb-2">
+                                    <div className="flex items-center gap-1 mb-2">
                                         <input type="checkbox" value="1" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded " name='remember_me' />
-                                        <label for="default-checkbox" class="ms-2 text-sm  text-gray-900 dark:text-gray-300">Remember me</label>
+                                        <label htmlFor="default-checkbox" className="ms-2 text-sm  text-gray-900 dark:text-gray-300">Remember me</label>
                                     </div>
-                                    <div class="flex items-center gap-1 mb-2">
+                                    <div className="flex items-center gap-1 mb-2">
 
-                                        <Link to="/forgot-page" className='text-sm font-medium text-black hover:text-black focus:text-black'>Forgot Password?</Link>
+                                        <Link to="/forgot-password" className='text-sm font-medium text-black hover:text-black focus:text-black'>Forgot Password?</Link>
                                     </div>
                                 </div>
 
                                 <br />
-                                <button className='mb-2 py-2 px-4 font-medium bg-yellow-500 hover:bg-yellow-400  text-base rounded-2xl ' >
+                                <button className='mb-2 py-2 px-4 font-medium text-white bg-blue-600 hover:bg-blue-500 focus:bg-blue-500  text-base rounded-2xl ' >
                                     Login to Your Account
                                 </button>
 

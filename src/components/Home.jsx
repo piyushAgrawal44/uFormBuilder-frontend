@@ -1,18 +1,23 @@
 import React, { useEffect, useState } from 'react'
 import Button from './subcomponents/Button'
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import CustomLoader from './CustomLoader';
 
 // let backendURL = "http://localhost:8000"
 let backendURL = "https://u-form-builder-backend.vercel.app"
 export default function Home() {
+  const navigate=useNavigate()
   const [forms, setForms] = useState([
 
   ]);
   const [loading, setLoading] = useState(true);
 
   const fetchData = async () => {
+    if (localStorage.getItem('quizmingo_315123_auth_token')) {
+      navigate("/login");
+      return ;
+    }
     const response = await fetch(backendURL + "/fetch/form", {
       method: 'GET', // *GET, POST, PUT, DELETE, etc.
       headers: {
@@ -30,7 +35,9 @@ export default function Home() {
     setLoading(false);
   }
   useEffect(() => {
+    
     fetchData();
+// eslint-disable-next-line
   }, []);
 
   return (
