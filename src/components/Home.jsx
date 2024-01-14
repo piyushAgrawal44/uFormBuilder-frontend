@@ -3,6 +3,7 @@ import Button from './subcomponents/Button'
 
 import { Link, useNavigate } from "react-router-dom";
 import CustomLoader from './CustomLoader';
+import QuizMingoLogo from "../images/quizmingo-logo.png";
 
 // let backendURL = "http://localhost:8000"
 let backendURL = "https://u-form-builder-backend.vercel.app"
@@ -34,6 +35,11 @@ export default function Home() {
     setForms(data);
     setLoading(false);
   }
+  
+  const logout=()=>{
+    console.log("Logout");
+  }
+
   useEffect(() => {
     
     fetchData();
@@ -41,9 +47,18 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="bg-slate-100 p-2 h-screen">
-      <br />
-      <h1 className=' text-center font-semibold text-3xl'>Welcome to QuizMingo</h1>
+    <div className="bg-white p-2 h-screen">
+      
+      
+      <div className="text-center mt-5">
+        <img src={QuizMingoLogo} className='max-w-[300px] w-[280px] mx-auto' alt="logo" />
+        <span>QuizMingo - Your trusted platform for seamless online assessments</span>
+      </div>
+      <div className="flex justify-center gap-5">
+          <Link to="/account" className='text-blue-600 hover:text-blue-700'><i className='bi bi-person'></i> Account</Link>
+          <button onClick={logout} className='text-blue-600 hover:text-blue-700'><i class="bi bi-box-arrow-right"></i> Logout</button>
+      </div>
+
       <br />
       <br />
       <div className="d-flex text-end">

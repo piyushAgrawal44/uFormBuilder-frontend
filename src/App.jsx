@@ -16,6 +16,7 @@ import LoginPage from "./components/user_authentication/LoginPage";
 import SignupPage from "./components/user_authentication/SignupPage";
 import ForgotPasswordPage from "./components/user_authentication/ForgotPassword";
 import VerifyEmailPage from "./components/user_authentication/VerifyEmail";
+import AccountPage from "./components/user_account/Account";
 function App() {
   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
   const Backend = isMobile ? TouchBackend : HTML5Backend;
@@ -38,6 +39,8 @@ function App() {
             <Route exact path='/signup' element={<SignupPage />} />
             <Route exact path='/verify-email' element={<VerifyEmailPage />} />
             <Route exact path='/forgot-password' element={<ForgotPasswordPage setAlert={setAlert} />} />
+
+            <Route exact path='/account' element={<AccountPage />} />
 
 
 
