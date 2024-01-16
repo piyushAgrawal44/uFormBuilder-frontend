@@ -65,6 +65,9 @@ function UserResponse() {
                             )
                         })
                     }
+                    {
+                        userResponses.length==0 && <p>No data found...</p>
+                    }
 
 
                 </div>

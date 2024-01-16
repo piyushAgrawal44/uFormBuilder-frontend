@@ -142,7 +142,7 @@ export default function LoginPage() {
                                 <div className="flex justify-between mt-3">
                                     <div className="flex items-center gap-[2px] mb-2">
                                         <input type="checkbox" value="1" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded " name='remember_me' ref={rememberMeCheckbox} />
-                                        <label htmlFor="default-checkbox" className="ms-1 text-sm  text-gray-900 dark:text-gray-300">Remember me</label>
+                                        <label htmlFor="default-checkbox" className="ms-1 text-sm text-gray-900">Remember me</label>
                                     </div>
                                     <div className="flex items-center gap-1 mb-2">
 
