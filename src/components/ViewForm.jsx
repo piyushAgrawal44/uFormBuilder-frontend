@@ -18,6 +18,10 @@ function ViewForm(props) {
 
     const [loading, setLoading] = useState(true);
     const fetchData = async () => {
+        if (!localStorage.getItem('quizmingo_315123_auth_token') && !sessionStorage.getItem('quizmingo_315123_auth_token')) {
+            navigate("/login");
+            return;
+          }
         try {
 
             

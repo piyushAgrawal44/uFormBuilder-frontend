@@ -4,6 +4,7 @@ import ViewClozeQuestion from './subcomponents/ViewClozeQuestion';
 import ViewComprehensionQuestion from './subcomponents/ViewComprehensionQuestion';
 import Input from './subcomponents/Input';
 import Label from './subcomponents/Label';
+import { useNavigate } from 'react-router-dom';
 
 // let backendURL = "http://localhost:8000"
 let backendURL = "https://u-form-builder-backend.vercel.app"
@@ -19,8 +20,12 @@ function ViewResponse(props) {
         questions: [
         ]
     });
-
+    const navigate = useNavigate();
     const fetchData = async () => {
+        if (!localStorage.getItem('quizmingo_315123_auth_token') && !sessionStorage.getItem('quizmingo_315123_auth_token')) {
+            navigate("/login");
+            return;
+          }
         try {
 
             const response = await fetch(backendURL + "/view/form/single/response", {

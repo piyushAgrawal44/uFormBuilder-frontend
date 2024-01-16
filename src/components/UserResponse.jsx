@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Button from './subcomponents/Button'
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // let backendURL = "http://localhost:8000"
 let backendURL = "https://u-form-builder-backend.vercel.app";
@@ -13,8 +13,12 @@ function UserResponse() {
     const id = urlParams.get('id');
 
     const [formName, setFormName] = useState("")
-
+    const navigate = useNavigate();
     const fetchData = async () => {
+        if (!localStorage.getItem('quizmingo_315123_auth_token') && !sessionStorage.getItem('quizmingo_315123_auth_token')) {
+            navigate("/login");
+            return;
+          }
         const response = await fetch(backendURL + "/view/form/response", {
             method: 'POST', // *GET, POST, PUT, DELETE, etc.
             headers: {
