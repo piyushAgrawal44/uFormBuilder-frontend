@@ -30,7 +30,7 @@ function DragCategoryOptionMapping(props) {
     const draggingEnd = (draggedItemIndex) => {
         
         // props.currentElementIndex is current item index i just swapping the elements
-        dispatch(actions.swapOption({questionId: props.questionIndex, index1: draggedItemIndex, index2: props.currentElementIndex}));
+        dispatch(actions.swapOption({question_type: 'categorized-question',questionId: props.questionIndex, index1: draggedItemIndex, index2: props.currentElementIndex}));
     }
 
 

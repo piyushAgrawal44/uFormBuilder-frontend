@@ -105,7 +105,7 @@ export const createFormSlice = createSlice({
             }
         },
         swapOption: (state, action) => {
-            // we have dragging feature in our web so dragging categories with each other is handle by this function
+            // we have dragging feature in our web so dragging options with each other is handle by this function
             // payload have 2 indexes that need to be swapped, and questionIndex
             const index1 = action.payload.index1;
             const index2 = action.payload.index2;

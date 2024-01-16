@@ -35,7 +35,6 @@ export default function ForgotPasswordPage() {
             setDetails(tempObj);
             return 0;
         }
-        console.log(email);
         // send code to email id logic
 
         const tempObj = { ...details };

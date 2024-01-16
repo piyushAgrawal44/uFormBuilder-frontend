@@ -8,7 +8,7 @@ import ComprehensionQuestion from './subcomponents/ComprehensionQuestion'
 import Label from './subcomponents/Label'
 import Input from './subcomponents/Input'
 import CloseButton from './subcomponents/CloseButton';
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import CustomLoader from './CustomLoader';
 import CopyButton from './subcomponents/CopyButton';
 
@@ -94,7 +94,7 @@ export default function NewForm(props) {
                 setTimeout(() => {
                     const newAlert = { display: false, message: "", type: "danger" };
                     props.setAlert(newAlert);
-                    navigate('/')
+                    navigate('/',{ replace: true })
                 }, 2000);
                 return;
             }
@@ -123,11 +123,11 @@ export default function NewForm(props) {
                 (
                     <div>
                         <section className='bg-blue-300 z-10 sticky top-0 flex justify-between items-center px-2 py-2'>
-                            <Link to="/">
+                            <button onClick={()=>{navigate(-1)}}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-arrow-left" viewBox="0 0 16 16">
                                     <path fillRule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8" />
                                 </svg>
-                            </Link>
+                            </button>
                             <div className='flex justify-end gap-2'>
                                 <Button text="Save Draft" onclick={() => save(1)} />
                                 <Button text="Proceed" onclick={() => save(2)} />
