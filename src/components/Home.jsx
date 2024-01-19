@@ -148,7 +148,7 @@ export default function Home() {
                   <div key={index}>
                     <div className='mb-1 px-3 py-2 bg-white shadow-sm border border-1 border-gray-200 rounded-[2px] flex justify-between'>
                       <div className='flex items-center flex-wrap'>
-                        <Link target="_blank" to={ele.status === 2 ? "/view/form?id=" + ele.id : "/edit/form?id=" + ele.id}><span className='font-semibold'>{ele.name}</span></Link> &nbsp;<span> | &nbsp;<span>{ele.status === 1 ? "Draft" : "Active"}</span>&nbsp; | </span>&nbsp;<span className='text-sm'>Created On: {ele.date}</span>
+                        <Link  to={ele.status === 2 ? "/view/form?id=" + ele.id : "/edit/form?id=" + ele.id}><span className='font-semibold'>{ele.name}</span></Link> &nbsp;<span> | &nbsp;<span>{ele.status === 1 ? "Draft" : "Active"}</span>&nbsp; | </span>&nbsp;<span className='text-sm'>Created On: {ele.date}</span>
                       </div>
 
                       <div className='flex flex-wrap sm:flex-nowrap items-center gap-2'>
@@ -160,12 +160,12 @@ export default function Home() {
                         }
 
                         {
-                          ele.status === 2 && <Link target="_blank" to={"/view/form?id=" + ele.id}>
+                          ele.status === 2 && <Link  to={"/view/form?id=" + ele.id}>
                             <Button text="View" />
                           </Link>
                         }
                         {
-                          ele.status === 2 && <Link target="_blank" to={"/view/form/response?id=" + ele.id}>
+                          ele.status === 2 && <Link  to={"/view/form/response?id=" + ele.id}>
                             <Button text="Responses" />
                           </Link>
                         }

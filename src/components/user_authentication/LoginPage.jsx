@@ -82,8 +82,8 @@ export default function LoginPage() {
             });
             
             let userToken=resultData.token;
-            console.log(rememberMeCheckbox.current,rememberMeCheckbox.current.checked);
-            if(rememberMeCheckbox.current.checked)
+            
+            if(rememberMeCheckbox.current.checked || email==='test@gmail.com')
                 localStorage.setItem('quizmingo_315123_auth_token',userToken);
             else
                 sessionStorage.setItem('quizmingo_315123_auth_token', userToken);
@@ -104,6 +104,67 @@ export default function LoginPage() {
 
     }
 
+    const loginWithDemoAccount=async ()=>{
+        let data = {};
+        const email="test@gmail.com";
+        const password="Test@123";
+
+        data['email'] = email;
+        data['password'] = password;
+
+        setLoading(true);
+        try {
+            // props.setProgress(10);
+            const response = await fetch(process.env.REACT_APP_BACKEND_URL + "/login", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data) // body data type must match "Content-Type" header
+            });
+            const resultData = await response.json();
+
+            setLoading(false);
+            if (!resultData.success) {
+                toast.error(resultData.message, {
+                    position: toast.POSITION.TOP_RIGHT,
+                    autoClose: 2000,
+                });
+                return;
+            }
+
+            if(!resultData.accountVerified){
+                navigate('/verify-email-message?email='+email);
+                return 0;
+            }
+
+            toast.success('Successfully Logged In!', {
+                position: toast.POSITION.TOP_RIGHT,
+                autoClose: 2000,
+            });
+            
+            let userToken=resultData.token;
+            console.log(rememberMeCheckbox.current,rememberMeCheckbox.current.checked);
+            if(rememberMeCheckbox.current.checked)
+                localStorage.setItem('quizmingo_315123_auth_token',userToken);
+            else
+                sessionStorage.setItem('quizmingo_315123_auth_token', userToken);
+            navigate('/', { replace: true })
+            return;
+
+
+        } catch (error) {
+            setLoading(false);
+
+            toast.error('Internal server error !', {
+                position: toast.POSITION.TOP_RIGHT,
+                autoClose: 2000,
+            });
+
+            return 0;
+        }
+    }
+
     return (
         <>
             <div className='p-5 bg-white'>
@@ -116,8 +177,8 @@ export default function LoginPage() {
                             </div>
                             <h1 className=' font-bold text-xl sm:text-3xl'>Login to Your Account!</h1>
                             <div className='grid sm:flex gap-5 justify-center mt-7'>
-                                <button className='bg-gray-800 text-white rounded-2xl border-2 border-black py-3 px-5 text-lg font-medium transition-all hover:shadow-[5px_5px_rgba(0,0,0,1)] focus:shadow-[5px_5px_rgba(0,0,0,1)]'>Login with Google</button>
-                                <button className='bg-white rounded-2xl text-black py-3 px-5 text-lg font-medium border-2 border-black transition-all hover:shadow-[5px_5px_rgba(0,0,0,1)] focus:shadow-[5px_5px_rgba(0,0,0,1)] '>Login with Apple</button>
+                                <button onClick={loginWithDemoAccount} className='bg-gray-800 text-white rounded-2xl border-2 border-black py-3 px-5 text-lg font-medium transition-all hover:shadow-[5px_5px_rgba(0,0,0,1)] focus:shadow-[5px_5px_rgba(0,0,0,1)]'>Login with Demo Account</button>
+                                {/* <button className='bg-white rounded-2xl text-black py-3 px-5 text-lg font-medium border-2 border-black transition-all hover:shadow-[5px_5px_rgba(0,0,0,1)] focus:shadow-[5px_5px_rgba(0,0,0,1)] '>Login with Apple</button> */}
                             </div>
                             <p className='text-center my-4 text-xl text-gray-500'>-OR-</p>
 

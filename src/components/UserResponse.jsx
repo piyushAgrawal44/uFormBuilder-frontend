@@ -56,7 +56,7 @@ function UserResponse() {
                                             <span className=''>{ele.name}</span>&nbsp;<span> |  </span>  &nbsp;<span className='text-sm'>{ele.email}</span>&nbsp; | &nbsp;<span className='text-sm'>Created On: {ele.created_at}</span>
                                         </div>
                                         <div className='flex items-center gap-2'>
-                                            <Link target='_blank' to={"/view/response?form_id=" + id+"&response_id="+ele._id}>
+                                            <Link  to={"/view/response?form_id=" + id+"&response_id="+ele._id}>
                                                 <Button text="View" />
                                             </Link>
                                         </div>
@@ -66,7 +66,7 @@ function UserResponse() {
                         })
                     }
                     {
-                        userResponses.length==0 && <p>No data found...</p>
+                        userResponses.length===0 && <p>No data found...</p>
                     }
 
 

@@ -121,12 +121,12 @@ export default function SignupPage() {
                             <div className="text-center mb-2">
                                 <img src={QuizMingoLogo} className='img-fluid max-w-[200px] ' alt="logo" />
                             </div>
-                            <h1 className='font-bold text-xl sm:text-3xl'>Signup and Start Now!</h1>
-                            <div className='grid sm:flex gap-5 justify-center mt-7'>
+                            <h1 className='font-bold text-xl sm:text-3xl mb-4'>Signup and Start Now!</h1>
+                            {/* <div className='grid sm:flex gap-5 justify-center mt-7'>
                                 <button className='bg-gray-800 text-white rounded-2xl border-2 border-black py-3 px-5 text-lg font-medium transition-all hover:shadow-[5px_5px_rgba(0,0,0,1)] focus:shadow-[5px_5px_rgba(0,0,0,1)]'>Signup with Google</button>
                                 <button className='bg-white rounded-2xl text-black py-3 px-5 text-lg font-medium border-2 border-black transition-all hover:shadow-[5px_5px_rgba(0,0,0,1)] focus:shadow-[5px_5px_rgba(0,0,0,1)] '>Signup with Apple</button>
                             </div>
-                            <p className='text-center my-4 text-xl text-gray-500'>-OR-</p>
+                            <p className='text-center my-4 text-xl text-gray-500'>-OR-</p> */}
                             <div>
 
                                 <Label label="Name" isRequired={true} textColor='text-gray-500' fontWeight="font-semibold" />
